@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Visualizar PDF{% endblock %}
+
+{% block content %}
+    <div x-data="setupPDFViewer('{{ filename }}')" x-cloak>
+        <div class="row">
+            <!-- Coluna da esquerda: PDF -->
+            <div class="col-lg-8">
+                <!-- Barra de navegacao entre pgs -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button class="btn btn-sm btn-outline-primary" :disabled="currentPage === 1" @click="renderPage(currentPage - 1)" >
+                        Página anterior
+                    </button>
+                    <span> Página <strong x-text="currentPage"></strong> de <strong x-text="totalPages"></strong></span>
+                    <button class="btn btn-sm btn-outline-primary" :disabled="currentPage === totalPages" @click="renderPage(currentPage + 1)" >
+                        Próxima página
+                    </button>
+                </div>
+
+                <!-- area do PDF -->
+                <div id="pdf-container" x-ref="pdfContainer" @click="addPoint"
+                     style="position: relative; border: 1px solid #ccc; overflow: auto; cursor: crosshair;">
+                    <!-- Canvas onde o PDF é renderizado -->
+                    <canvas x-ref="pdfCanvas"></canvas>
+                    <!-- Canvas sobreposto para desenhar poligono -->
+                    <canvas x-ref="drawCanvas" style="position: absolute; top: 0; left: 0;"></canvas>
+                </div>
+            </div>
+
+            <!-- Coluna da direita: extração -->
+            <div class="col-lg-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <a href="/" class="btn btn-info">
+                        Enviar novo PDF
+                    </a>
+                    <button type="button" class="btn btn-warning" @click="clearSelection()" >
+                        Limpar seleção
+                    </button>
+                </div>
+                <button type="button" class="btn btn-success w-100 mb-2" @click="extractText()">
+                    Extrair texto da área selecionada
+                </button>
+
+
+                <!-- Resultado da extracao -->
+                <div x-ref="extractedText" class="border p-2 rounded bg-white"
+                     style="white-space: pre-line; height: 450px; overflow-y: auto;"></div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        #pdf-container {
+            max-width: 100%;
+        }
+
+        canvas {
+            display: block;
+            height: auto;
+        }
+    </style>
+{% endblock %}

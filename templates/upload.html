@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Enviar um arquivo PDF</h2>
+
+    <form method="POST" action="/upload" enctype="multipart/form-data">
+        <div class="mb-3">
+            <input type="file" name="pdf_file" id="pdf_file" class="form-control" required accept=".pdf" />
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+
+    <!-- msg erro -->
+    {% if request.args.get('error') %}
+    <div class="alert alert-danger">
+        {{ request.args.get('error') }}
+    </div>
+    {% endif %}
+
+{% endblock %}
